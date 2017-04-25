@@ -27,11 +27,19 @@
   import HeaderBarLeft from './header/Left.vue'
   import HeaderBarRight from './header/Right.vue'
   import NavMenu from './nav/Menu.vue'
+  import {connect, disconnect} from '@/lib/event'
+
   export default {
     components: {
       HeaderBarLeft,
       HeaderBarRight,
       NavMenu
+    },
+    created() {
+      connect()
+    },
+    beforeDestroy() {
+      disconnect()
     }
   }
 </script>

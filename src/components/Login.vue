@@ -5,11 +5,14 @@
       <el-form-item prop="server">
         <el-input type="url" v-model="model.server" auto-complete="off" placeholder="Server"></el-input>
       </el-form-item>
-      <el-form-item prop="user">
-        <el-input type="text" v-model="model.user" auto-complete="off" placeholder="User" disabled="true"></el-input>
+      <el-form-item prop="name">
+        <el-input type="text" v-model="model.name" auto-complete="off" placeholder="Name" :disabled="!model.useAuth"></el-input>
       </el-form-item>
       <el-form-item prop="pwd">
-        <el-input type="password" v-model="model.pwd" auto-complete="off" placeholder="Password" disabled="true"></el-input>
+        <el-input type="password" v-model="model.pwd" auto-complete="off" placeholder="Password" :disabled="!model.useAuth"></el-input>
+      </el-form-item>
+      <el-form-item label="Use Authorization">
+        <el-checkbox v-model="model.useAuth"></el-checkbox>
       </el-form-item>
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;" @click.native.prevent="handleSubmit" :loading="logining">登录</el-button>
@@ -23,10 +26,10 @@
     data() {
       return {
         model: {
-          server: localStorage.getItem('server') || '',
-          // not support follow
-          user: '',
-          pwd: ''
+          server: this.$store.state.server,
+          name: this.$store.state.auth.name,
+          pwd: this.$store.state.auth.pwd,
+          useAuth: this.$store.state.auth.enabled
         },
         rule: {
           server: {
@@ -52,12 +55,34 @@
             this.logining = false
             return
           }
-          localStorage.setItem('server', this.model.server)
-          this.$store.commit('updateServer', this.model.server)
+          return this.$http.get(this.model.server + '/api/', {
+            headers: this.model.useAuth && {
+              'Authorization': 'Basic ' + btoa(this.model.name + ':' + this.model.pwd)
+            } || {}
+          }).then(() => {
+            this.$store.commit('updateServer', this.model.server)
+            this.$store.commit('updateAuth', {
+              name: this.model.name,
+              pwd: this.model.pwd,
+              enabled: this.model.useAuth
+            })
 
-          // TODO: check server is valid
-          this.logining = true
-          this.$router.push('/server')
+            this.logining = true
+            this.$router.push('/server')
+          }).catch(res => {
+            switch (res.status) {
+              case 401:
+                if (this.model.useAuth) {
+                  this.$message.error('name or password wrong')
+                } else {
+                  this.$message.error('please enable authorization')
+                }
+                break
+              default:
+                this.$message.error('server cannot acceptable')
+            }
+            this.logining = false
+          })
         })
       }
     }

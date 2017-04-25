@@ -45,6 +45,8 @@ Vue.mixin({
 Vue.use(ElementUI)
 Vue.use(VueResource)
 
+if (store.state.auth.enabled) Vue.http.headers.common['Authorization'] = 'Basic ' + btoa(store.state.auth.name + ':' + store.state.auth.pwd)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -7,6 +7,11 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     server: localStorage.getItem('server'),
+    auth: localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) || {
+      user: '',
+      pwd: '',
+      enabled: false
+    },
     version: {
       loading: false,
       loaded: false,
@@ -21,6 +26,12 @@ const store = new Vuex.Store({
   mutations: {
     updateServer(state, server) {
       state.server = server
+      localStorage.setItem('server', server)
+    },
+    updateAuth(state, auth) {
+      state.auth = auth
+      localStorage.setItem('auth', JSON.stringify(auth))
+      if (auth.enabled) Vue.http.headers.common['Authorization'] = 'Basic ' + btoa(auth.name + ':' + auth.pwd)
     },
     startUpdateVersion(state) {
       state.version.loading = true
