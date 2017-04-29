@@ -49,7 +49,6 @@
             title: 'Server Start',
             message: `start server ${data.server} success`
           })
-          this.$store.dispatch('fetch', 'server')
         } else {
           this.$notify.error({
             title: 'Server Start',
@@ -65,7 +64,6 @@
             title: 'Server Stop',
             message: `stop server ${data.server} success`
           })
-          this.$store.dispatch('fetch', 'server')
         } else {
           this.$notify.error({
             title: 'Server Stop',

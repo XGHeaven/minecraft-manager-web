@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="wrapper">
     <div class="header">
       <el-form inline class="header-info">
         <el-form-item label="Name">
@@ -11,39 +11,46 @@
         <el-form-item label="Status">
           <el-tag>{{server.status}}</el-tag>
           <el-button-group>
-            <el-button size="small" :disabled="this.server.status !== 'stopped'" :loading="this.server.status === 'starting'" @click="startServer()">Start</el-button>
-            <el-button size="small" :disabled="this.server.status !== 'started'" :loading="this.server.status === 'stopping'" @click="stopServer()">Stop</el-button>
+            <el-button size="small" :disabled="this.server.status !== 'stopped'" :loading="this.server.status === 'starting'" @click="$store.dispatch('startServer', server.name)">Start</el-button>
+            <el-button size="small" :disabled="this.server.status !== 'started'" :loading="this.server.status === 'stopping'" @click="$store.dispatch('stopServer', server.name)">Stop</el-button>
           </el-button-group>
         </el-form-item>
       </el-form>
     </div>
-    <el-menu mode="horizontal" defaultActive="log">
-      <el-menu-item index="log" @click="$router.push({name: 'log', params: {serverName: $route.params.serverName}})">Log</el-menu-item>
-      <el-menu-item index="setting">Setting</el-menu-item>
-    </el-menu>
-    <router-view></router-view>
+    <el-tabs :value="current" v-model="current">
+      <el-tab-pane label="Console" name="console"></el-tab-pane>
+      <el-tab-pane label="Setting" name="setting"></el-tab-pane>
+    </el-tabs>
+    <div class="component">
+      <keep-alive>
+        <component :is="'server-' + current" :server="server"></component>
+      </keep-alive>
+    </div>
   </div>
 </template>
 
 <script>
   import {server} from '@/resource/'
+  import ServerConsole from './Console.vue'
 
   let timer = null
   let interval = 1000
 
   export default {
+    components: {
+      ServerConsole: ServerConsole
+    },
     data() {
       return {
-        server: {
-          name: 'name1',
-          version: '1.11.2',
-          status: 'starting'
-        }
+        current: 'console'
       }
     },
     computed: {
       serverName() {
         return this.$route.params.serverName
+      },
+      server() {
+        return this.$store.state.servers.find(s => s.name === this.serverName) || {}
       }
     },
     created() {
@@ -53,22 +60,6 @@
       getServer() {
         server.get({server: this.serverName}).then(res => {
           this.server = res.body
-        })
-      },
-      startServer() {
-        server.update({server: this.serverName}, {
-          status: 'start'
-        }).then(res => {
-          this.status = 'starting'
-          this.waiting()
-        })
-      },
-      stopServer() {
-        server.update({server: this.serverName}, {
-          status: 'stop'
-        }).then(res => {
-          this.status = 'stopping'
-          this.waiting()
         })
       },
       waiting() {
@@ -90,6 +81,17 @@
 </script>
 
 <style lang="stylus" scoped>
+  .wrapper
+    display flex
+    flex-direction column
+    height 100%
+
+  .component
+    overflow hidden
+    flex auto
+    position relative
+    height 100%
+
   .header
     padding 30px
     background #F9FAFC

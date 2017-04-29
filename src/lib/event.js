@@ -20,9 +20,7 @@ function handleSEEvent(event) {
 }
 
 export function connect() {
-  let url = store.state.server + '/api/event'
-  if (store.state.auth.enabled) url += '?authorization=' + btoa(store.state.auth.name + ':' + store.state.auth.pwd)
-  es = new EventSource(url);
+  es = createEventSource(store.state.server + '/api/event');
   [SERVER_START, SERVER_STOP, JAR_INSTALL, SAVE_BACKUP, SAVE_ROLLBACK, SAVE_START_ROLLBACK].forEach(event => {
     es.addEventListener(event, handleSEEvent)
   })
@@ -35,4 +33,9 @@ export function reconnect() {
 
 export function disconnect() {
   es.close()
+}
+
+export function createEventSource(url) {
+  if (store.state.auth.enabled) url += '?authorization=' + btoa(store.state.auth.name + ':' + store.state.auth.pwd)
+  return new EventSource(url)
 }

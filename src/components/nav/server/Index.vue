@@ -16,9 +16,9 @@
       <el-table-column label="Action">
         <template scope="scope">
           <el-button-group>
-            <el-button size="small" :disabled="scope.row.status !== 'stopped'" @click="startServer(scope.row)">Start
+            <el-button size="small" :disabled="scope.row.status !== 'stopped'" @click="$store.dispatch('startServer', scope.row.name)">Start
             </el-button>
-            <el-button size="small" :disabled="scope.row.status !== 'started'" @click="stopServer(scope.row)">Stop
+            <el-button size="small" :disabled="scope.row.status !== 'started'" @click="$store.dispatch('stopServer', scope.row.name)">Stop
             </el-button>
             <el-button size="small" type="danger">Delete</el-button>
           </el-button-group>
@@ -69,22 +69,6 @@
       ...mapState(['servers'])
     },
     methods: {
-      startServer(server) {
-        console.log('start')
-        this.$http.put(this.$store.state.server + '/api/server/' + server.name, {
-          status: 'start'
-        }).then(res => {
-          server.status = 'starting'
-        })
-      },
-      stopServer(server) {
-        console.log('stop')
-        this.$http.put(this.$store.state.server + '/api/server/' + server.name, {
-          status: 'stop'
-        }).then(res => {
-          server.status = 'stopping'
-        })
-      },
       autoRefresh() {
         this.$store.dispatch('fetch', 'server')
       },

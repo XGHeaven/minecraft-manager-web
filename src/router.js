@@ -4,7 +4,6 @@ import Login from '@/components/Login'
 import Main from '@/components/Main'
 import ServerIndex from '@/components/nav/server/Index'
 import Server from '@/components/nav/server/Server'
-import ServerLog from '@/components/nav/server/Log'
 import JarIndex from '@/components/nav/jar/Index'
 import SaveIndex from '@/components/nav/save/Index'
 import Save from '@/components/nav/save/Save'
@@ -24,12 +23,7 @@ const router = new Router({
       }, {
         path: 'server/:serverName',
         name: 'server',
-        component: Server,
-        children: [{
-          path: 'log',
-          name: 'log',
-          component: ServerLog
-        }]
+        component: Server
       }, {
         path: 'jar',
         name: 'jars',

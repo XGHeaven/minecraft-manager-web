@@ -1,7 +1,7 @@
 import Resource from './resource'
 
 export const server = new Resource('server', '/api')
-export const serverLog = server.child('log')
+export const console = server.child('console')
 export const jar = new Resource('jar', '/api')
 export const version = new Resource('version', '/api')
 export const save = new Resource('save', '/api')
