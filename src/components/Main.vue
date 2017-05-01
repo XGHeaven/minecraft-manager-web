@@ -11,8 +11,9 @@
       </el-row>
     </div>
     <el-row class="main pinned">
-      <el-col :span="4" class="full-height">
+      <el-col :span="4" class="full-height left-container">
         <nav-menu></nav-menu>
+        <os-usage></os-usage>
       </el-col>
       <el-col :span="20" class="full-height">
         <transition name="fade" mode="out-in">
@@ -27,13 +28,15 @@
   import HeaderBarLeft from './header/Left.vue'
   import HeaderBarRight from './header/Right.vue'
   import NavMenu from './nav/Menu.vue'
+  import OsUsage from './nav/OsUsage.vue'
   import {connect, disconnect} from '@/lib/event'
 
   export default {
     components: {
       HeaderBarLeft,
       HeaderBarRight,
-      NavMenu
+      NavMenu,
+      OsUsage
     },
     created() {
       connect()
@@ -63,5 +66,9 @@
   .full-height
     height 100%
     overflow scroll
+
+  .left-container
+    display flex
+    flex-direction column
 
 </style>
