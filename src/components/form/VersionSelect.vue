@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-select filterable @change="change" v-model="version">
+    <el-select filterable @change="change" v-model="version" placeholder="Please select minecraft version">
       <el-option v-for="version in filterVersions" :label="version.id" :value="version.id" :key="'version'">
         <span>{{version.id}}</span>
         <span class="optionSubTitle">{{version.type}}</span>
