@@ -71,7 +71,7 @@
   }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
   .container
     height auto
     background #324057
