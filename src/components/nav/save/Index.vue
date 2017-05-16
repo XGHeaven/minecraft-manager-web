@@ -6,7 +6,7 @@
       <template scope="scope">
         <el-button-group>
           <el-button size="small" type="primary" @click="$router.push({name: 'save', params: {saveName: scope.row.name}})">Info</el-button>
-          <el-button size="small" type="danger" :disabled="!!scope.row.usedFor">Delete</el-button>
+          <el-button size="small" type="danger" :disabled="!!scope.row.usedFor" @click="removeSave(scope.row)">Delete</el-button>
         </el-button-group>
       </template>
     </el-table-column>
@@ -15,6 +15,7 @@
 
 <script>
   import {mapState} from 'vuex'
+  import {save as saveResource} from '@/resource'
 
   export default {
     data() {
@@ -27,6 +28,13 @@
     methods: {
       autoRefresh() {
         this.$store.dispatch('fetch', 'save')
+      },
+      removeSave(save) {
+        saveResource.delete({
+          save: save.name
+        }).then(res => {
+          this.$store.dispatch('fetch', 'save')
+        })
       }
     }
   }

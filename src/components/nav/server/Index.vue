@@ -20,7 +20,7 @@
             </el-button>
             <el-button size="small" :disabled="scope.row.status !== 'started'" @click="$store.dispatch('stopServer', scope.row.name)">Stop
             </el-button>
-            <el-button size="small" type="danger">Delete</el-button>
+            <el-button size="small" type="danger" @click="removeServer(scope.row)">Delete</el-button>
           </el-button-group>
           <el-button size="small" type="primary"
                      @click="$router.push({name: 'server', params: {serverName: scope.row.name}})"
@@ -31,7 +31,13 @@
     <el-dialog title="Add Server" v-model="addServerModal">
       <el-form v-model="newServerModal">
         <el-form-item label="Server Name">
-          <el-input v-model="newServerModal.name"></el-input>
+          <el-input v-model="newServerModal.name" @change="sameWithServerName ? newServerModal.save = arguments[0] : ''"></el-input>
+        </el-form-item>
+        <el-form-item label="Save Name">
+          <el-select v-model="newServerModal.save" allowCreate filterable placeholder="Please select or create">
+            <el-option v-for="save in saves" :value="save.name" :label="save.name" :key="save.name"></el-option>
+          </el-select>
+          <el-checkbox v-model="sameWithServerName">Same with server name</el-checkbox>
         </el-form-item>
         <el-form-item label="Version">
           <version-select v-model="newServerModal.version"></version-select>
@@ -60,17 +66,35 @@
         addServerModal: false,
         newServerModal: {
           name: '',
-          version: ''
+          version: '',
+          save: ''
         },
+        sameWithServerName: true,
         processing: false
       }
     },
     computed: {
-      ...mapState(['servers'])
+      ...mapState(['servers', 'saves'])
+    },
+    watch: {
+      sameWithServerName(nv, ov) {
+        if (nv) this.newServerModal.save = this.newServerModal.name
+      }
     },
     methods: {
       autoRefresh() {
         this.$store.dispatch('fetch', 'server')
+      },
+      removeServer(server) {
+        resource.server.delete({
+          server: server.name
+        }).then(res => {
+          this.$store.dispatch('fetch', 'server')
+          this.$message({
+            type: 'success',
+            message: 'delete success, please delete save or jar manual'
+          })
+        })
       },
       addServer() {
         this.processing = true

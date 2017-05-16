@@ -71,6 +71,10 @@
           })
         }
       })
+
+      this.$store.dispatch('fetch', 'server')
+      this.$store.dispatch('fetch', 'save')
+      this.$store.dispatch('fetch', 'jar')
     }
   }
 </script>

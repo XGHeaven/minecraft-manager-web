@@ -7,6 +7,7 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
 import store from './store'
+import * as event from './lib/event'
 
 Vue.config.productionTip = false
 
@@ -33,11 +34,15 @@ Vue.mixin({
   created() {
     this.changeAutoRefresh()
     this.autoRefresh && this.autoRefresh.call && this.autoRefresh()
+    this.autoRefresh && this.autoRefresh.call && event.bus.$on(event.REFRESH_CLICK, this._refreshHandle = this.autoRefresh.bind(this))
   },
   beforeDestroy() {
     if (this._autoRefreshTimer) {
       clearInterval(this._autoRefreshTimer)
       this._autoRefreshTimer = null
+    }
+    if (this._refreshHandle) {
+      event.bus.$off(event.REFRESH_CLICK, this._refreshHandle)
     }
   }
 })
