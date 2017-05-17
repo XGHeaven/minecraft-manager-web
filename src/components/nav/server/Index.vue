@@ -29,7 +29,7 @@
       </el-table-column>
     </el-table>
     <el-dialog title="Add Server" v-model="addServerModal">
-      <el-form v-model="newServerModal">
+      <el-form v-model="newServerModal" labelWidth="120px">
         <el-form-item label="Server Name">
           <el-input v-model="newServerModal.name" @change="sameWithServerName ? newServerModal.save = arguments[0] : ''"></el-input>
         </el-form-item>
@@ -42,6 +42,11 @@
         <el-form-item label="Version">
           <version-select v-model="newServerModal.version"></version-select>
         </el-form-item>
+        <el-collapse>
+          <el-collapse-item title="Option">
+            <server-option :option="newServerModal.options"></server-option>
+          </el-collapse-item>
+        </el-collapse>
       </el-form>
       <div slot="footer">
         <el-button type="primary" @click="addServer()" :loading="processing">Add</el-button>
@@ -55,11 +60,13 @@
   import {mapState} from 'vuex'
   import * as event from '@/lib/event'
   import VersionSelect from '@/components/form/VersionSelect'
+  import ServerOption from '@/components/form/ServerOption'
   import * as resource from '@/resource'
 
   export default {
     components: {
-      VersionSelect
+      VersionSelect,
+      ServerOption
     },
     data() {
       return {
@@ -67,7 +74,24 @@
         newServerModal: {
           name: '',
           version: '',
-          save: ''
+          save: '',
+          options: {
+            javaXms: '256M',
+            javaXmx: '1G',
+            properties: {
+              gamemode: 0,
+              difficulty: 1,
+              pvp: true,
+              'enable-command-block': false,
+              'max-players': 20,
+              'server-port': 25565,
+              'view-distance': 10,
+              'white-list': false,
+              'online-mode': false,
+              'level-seed': 0,
+              motd: 'A Minecraft Server'
+            }
+          }
         },
         sameWithServerName: true,
         processing: false

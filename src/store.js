@@ -5,6 +5,12 @@ import * as event from '@/lib/event'
 
 Vue.use(Vuex)
 
+function updatePartial(type, selector) {
+  return (state, nValue) => {
+    Vue.set(state[type], selector(state[type], nValue), nValue)
+  }
+}
+
 const store = new Vuex.Store({
   state: {
     server: localStorage.getItem('server'),
@@ -45,6 +51,9 @@ const store = new Vuex.Store({
     update(state, [key, value]) {
       state[key] = value
     },
+    updateAServer: updatePartial('servers', (list, value) => list.findIndex(server => server.name === value.name)),
+    updateASave: updatePartial('saves', (list, value) => list.findIndex(save => save.name === value.name)),
+    updateAJar: updatePartial('jars', (list, value) => list.findIndex(jar => jar.version === value.version)),
     toggleAutoRefresh(state, bool) {
       if (bool === false || bool === true) {
         state.autoRefresh = bool

@@ -32,13 +32,14 @@
 <script>
   import {server} from '@/resource/'
   import ServerConsole from './Console.vue'
+  import ServerSetting from './Setting.vue'
 
   let timer = null
   let interval = 1000
 
   export default {
     components: {
-      ServerConsole: ServerConsole
+      ServerConsole, ServerSetting
     },
     data() {
       return {
