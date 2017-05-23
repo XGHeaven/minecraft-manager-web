@@ -10,7 +10,7 @@
         &nbsp;
       </el-col>
       <el-col :span="12" class="user-action">
-        Server: {{$store.state.server}}
+        Server: {{$store.state.address}}
         <el-button icon="edit" size="mini" @click="$router.push('/login')" type="primary"></el-button>
       </el-col>
     </el-row>

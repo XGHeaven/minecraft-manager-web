@@ -13,7 +13,7 @@ function updatePartial(type, selector) {
 
 const store = new Vuex.Store({
   state: {
-    server: localStorage.getItem('server'),
+    address: localStorage.getItem('address'), // server address
     auth: localStorage.getItem('auth') && JSON.parse(localStorage.getItem('auth')) || {
       user: '',
       pwd: '',
@@ -35,9 +35,9 @@ const store = new Vuex.Store({
     autoRefreshInterval: 3000
   },
   mutations: {
-    updateServer(state, server) {
-      state.server = server
-      localStorage.setItem('server', server)
+    updateServer(state, address) {
+      state.address = address
+      localStorage.setItem('address', address)
     },
     updateAuth(state, auth) {
       state.auth = auth

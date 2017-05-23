@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import store from '@/store'
+import url from 'url'
 
 export const bus = new Vue()
 export const ADD_CLICK = 'add-click'
@@ -20,7 +21,7 @@ function handleSEEvent(event) {
 }
 
 export function connect() {
-  es = createEventSource(store.state.server + '/api/event');
+  es = createEventSource('/api/event');
   [SERVER_START, SERVER_STOP, JAR_INSTALL, SAVE_BACKUP, SAVE_ROLLBACK, SAVE_START_ROLLBACK].forEach(event => {
     es.addEventListener(event, handleSEEvent)
   })
@@ -35,7 +36,15 @@ export function disconnect() {
   es.close()
 }
 
-export function createEventSource(url) {
-  if (store.state.auth.enabled) url += '?authorization=' + btoa(store.state.auth.name + ':' + store.state.auth.pwd)
-  return new EventSource(url)
+export function createEventSource(uri) {
+  let parsedUrl = url.parse(uri)
+  if (!parsedUrl.hostname) {
+    const defaultUrl = url.parse(store.state.address)
+    parsedUrl.hostname = defaultUrl.hostname
+    parsedUrl.port = defaultUrl.port
+    parsedUrl.protocol = defaultUrl.protocol
+  }
+  uri = url.format(parsedUrl)
+  if (store.state.auth.enabled) uri += '?authorization=' + btoa(store.state.auth.name + ':' + store.state.auth.pwd)
+  return new EventSource(uri)
 }

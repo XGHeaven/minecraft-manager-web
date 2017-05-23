@@ -54,7 +54,7 @@
     },
     created() {
       this.getLog()
-      this._eventSource = createEventSource(this.$store.state.server + `/api/server/${this.serverName}/console/stream`)
+      this._eventSource = createEventSource(`/api/server/${this.serverName}/console/stream`)
       this._eventSource.addEventListener('message', e => {
         this.logs.push(JSON.parse(e.data))
         this.scrollToEnd()

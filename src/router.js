@@ -46,7 +46,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  const server = localStorage.getItem('server')
+  const server = localStorage.getItem('address')
   if (!server && to.name !== 'login') {
     return next('/login')
   }

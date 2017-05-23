@@ -42,11 +42,11 @@ class Resource {
   }
 
   indexUrl(param) {
-    return store.state.server + this.compiledIndexPath(param)
+    return store.state.address + this.compiledIndexPath(param)
   }
 
   paramUrl(param) {
-    return store.state.server + this.compiledParamPath(param)
+    return store.state.address + this.compiledParamPath(param)
   }
 
   child(name) {

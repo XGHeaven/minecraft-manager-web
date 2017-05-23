@@ -73,7 +73,7 @@
     },
     methods: {
       connect() {
-        this.es = createEventSource(this.$store.state.server + '/api/system/stream')
+        this.es = createEventSource('/api/system/stream')
         this.es.addEventListener('message', e => {
           this.usage = JSON.parse(e.data)
         })
