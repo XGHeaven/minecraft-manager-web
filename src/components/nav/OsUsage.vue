@@ -10,8 +10,8 @@
 </template>
 
 <script>
-  import {system} from '@/resource'
   import {byte2Size} from '@/lib/utils'
+  import {createEventSource} from '@/lib/event'
 
   export default {
     data() {
@@ -31,7 +31,8 @@
             }
           },
           loadavg: [0, 0, 0]
-        }
+        },
+        es: null
       }
     },
     computed: {
@@ -49,24 +50,26 @@
         return 'Mem ' + byte2Size(this.usage.mem.total - this.usage.mem.free) + '/' + byte2Size(this.usage.mem.total)
       },
       cpuPrompt() {
-        return 'CPU ' + this.usage.loadavg.join(', ')
+        return 'CPU LoadAvg ' + this.usage.loadavg.map(v => v.toFixed(2)).join(', ')
       }
     },
     methods: {
-      getUsage() {
-        system.index().then(res => {
-          this.usage = res.data
+      connect() {
+        this.es = createEventSource(this.$store.state.server + '/api/system/stream')
+        this.es.addEventListener('message', e => {
+          this.usage = JSON.parse(e.data)
         })
+      },
+      disconnect() {
+        this.es && this.es.close()
+        this.es = null
       }
     },
     created() {
-      this._usageTimer = setInterval(() => {
-        this.getUsage()
-      }, 3000)
-      this.getUsage()
+      this.connect()
     },
     beforeDestroy() {
-      clearInterval(this._usageTimer)
+      this.disconnect()
     }
   }
 </script>
