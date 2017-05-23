@@ -30,6 +30,7 @@
   import NavMenu from './nav/Menu.vue'
   import OsUsage from './nav/OsUsage.vue'
   import {connect, disconnect} from '@/lib/event'
+  import pkg from '../../package.json'
 
   export default {
     components: {
@@ -38,8 +39,21 @@
       NavMenu,
       OsUsage
     },
+    watch: {
+      '$store.state.system.version': function(nValue) {
+        if (nValue !== pkg.version) {
+          this.$notify({
+            type: 'warning',
+            title: 'Version didn\'t match',
+            message: 'Version didn\'t match, server is ' + nValue + ' but web ui is support ' + pkg.version +
+              '. maybe have some bugs'
+          })
+        }
+      }
+    },
     created() {
       connect()
+      this.$store.dispatch('fetchSystemInfo')
     },
     beforeDestroy() {
       disconnect()

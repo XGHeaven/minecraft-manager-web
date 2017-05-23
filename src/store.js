@@ -24,6 +24,10 @@ const store = new Vuex.Store({
       loaded: false,
       versions: []
     },
+    system: {
+      version: '',
+      node: ''
+    },
     servers: [],
     jars: [],
     saves: [],
@@ -67,6 +71,9 @@ const store = new Vuex.Store({
           Object.assign(s, server)
         }
       })
+    },
+    updateSystemInfo(state, system) {
+      state.system = system
     }
   },
   actions: {
@@ -114,6 +121,14 @@ const store = new Vuex.Store({
       }
 
       return true
+    },
+
+    async fetchSystemInfo({commit}) {
+      resource.system.get({
+        system: 'info'
+      }).then(res => {
+        commit('updateSystemInfo', res.data)
+      })
     }
   }
 })

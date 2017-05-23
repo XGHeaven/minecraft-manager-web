@@ -1,5 +1,19 @@
 <template>
   <div class="container">
+    <div class="system-info">
+      <section>
+        <header>web:</header>
+        <span>{{version}}</span>
+      </section>
+      <section>
+        <header>server:</header>
+        <span>{{system.version}}</span>
+      </section>
+      <section>
+        <header>node:</header>
+        <span>{{system.node}}</span>
+      </section>
+    </div>
     <el-tooltip :content="cpuPrompt" placement="right">
       <el-progress :percentage="cpuPercent" class="progress" :textInside="true" :strokeWidth="18"></el-progress>
     </el-tooltip>
@@ -12,6 +26,8 @@
 <script>
   import {byte2Size} from '@/lib/utils'
   import {createEventSource} from '@/lib/event'
+  import {mapState} from 'vuex'
+  import pkg from '../../../package.json'
 
   export default {
     data() {
@@ -32,10 +48,12 @@
           },
           loadavg: [0, 0, 0]
         },
-        es: null
+        es: null,
+        version: pkg.version
       }
     },
     computed: {
+      ...mapState(['system']),
       cpuPercent() {
         const cpu = this.usage.cpu
         const used = cpu.user + cpu.sys + cpu.nice + cpu.irq
@@ -81,4 +99,17 @@
 
   .progress
     padding 3px
+
+  .system-info
+    padding 0 5px
+    /*text-align right*/
+    color white
+    font-size 0.75rem
+    section
+      display flex
+    header
+      display inline
+    span
+      flex-grow 1
+      text-align right
 </style>
