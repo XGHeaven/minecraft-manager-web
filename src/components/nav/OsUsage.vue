@@ -73,9 +73,9 @@
     },
     methods: {
       connect() {
-        this.es = createEventSource('/api/system/stream')
+        this.es = createEventSource('/api/system?format=event')
         this.es.addEventListener('message', e => {
-          this.usage = JSON.parse(e.data)
+          this.usage = JSON.parse(e.data).usage
         })
       },
       disconnect() {
