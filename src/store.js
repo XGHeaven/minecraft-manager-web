@@ -35,7 +35,7 @@ const store = new Vuex.Store({
     autoRefreshInterval: 3000
   },
   mutations: {
-    updateServer(state, address) {
+    updateAddress(state, address) {
       state.address = address
       localStorage.setItem('address', address)
     },

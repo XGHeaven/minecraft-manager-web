@@ -2,8 +2,8 @@
   <div class="login-container">
     <el-form :model="model" :rules="rule" ref="form">
       <h3 class="title">Minecraft Manager</h3>
-      <el-form-item prop="server">
-        <el-input type="url" v-model="model.server" auto-complete="off" placeholder="Server"></el-input>
+      <el-form-item prop="address">
+        <el-input type="url" v-model="model.address" auto-complete="off" placeholder="Server Address"></el-input>
       </el-form-item>
       <el-form-item prop="name">
         <el-input type="text" v-model="model.name" auto-complete="off" placeholder="Name" :disabled="!model.useAuth"></el-input>
@@ -26,13 +26,13 @@
     data() {
       return {
         model: {
-          server: this.$store.state.server,
+          address: this.$store.state.address,
           name: this.$store.state.auth.name,
           pwd: this.$store.state.auth.pwd,
           useAuth: this.$store.state.auth.enabled
         },
         rule: {
-          server: {
+          address: {
             required: true,
             type: 'url',
             message: 'server url is invalid'
@@ -55,12 +55,12 @@
             this.logining = false
             return
           }
-          return this.$http.get(this.model.server + '/api/', {
+          return this.$http.get(this.model.address + '/api/', {
             headers: this.model.useAuth && {
               'Authorization': 'Basic ' + btoa(this.model.name + ':' + this.model.pwd)
             } || {}
           }).then(() => {
-            this.$store.commit('updateServer', this.model.server)
+            this.$store.commit('updateAddress', this.model.address)
             this.$store.commit('updateAuth', {
               name: this.model.name,
               pwd: this.model.pwd,
