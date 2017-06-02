@@ -19,6 +19,7 @@
     </div>
     <el-tabs :value="current" v-model="current">
       <el-tab-pane label="Console" name="console"></el-tab-pane>
+      <el-tab-pane label="Player" name="player"></el-tab-pane>
       <el-tab-pane label="Setting" name="setting"></el-tab-pane>
     </el-tabs>
     <div class="component">
@@ -33,13 +34,14 @@
   import {server} from '@/resource/'
   import ServerConsole from './Console.vue'
   import ServerSetting from './Setting.vue'
+  import ServerPlayer from './Player.vue'
 
   let timer = null
   let interval = 1000
 
   export default {
     components: {
-      ServerConsole, ServerSetting
+      ServerConsole, ServerSetting, ServerPlayer
     },
     data() {
       return {
