@@ -1,6 +1,6 @@
 {
   "name": "minecraft-manager-web",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "minecraft-manager web-ui",
   "author": "XGHeaven <xgheaven@gmail.com>",
   "private": true,
