@@ -8,6 +8,7 @@
     </el-select>
     <el-checkbox v-model="showSnapshot">Snapshot</el-checkbox>
     <el-checkbox v-model="showOldVersion">Old Version</el-checkbox>
+    <el-button type="primary" size="mini" @click="$store.dispatch('loadingVersion', true)">Refresh</el-button>
   </div>
 </template>
 

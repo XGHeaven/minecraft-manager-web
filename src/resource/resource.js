@@ -1,6 +1,7 @@
 import store from '../store'
 import Vue from 'vue'
 import path2Regexp from 'path-to-regexp'
+import querystring from 'querystring'
 
 class Resource {
   constructor(name, prefix, parent) {
@@ -21,32 +22,32 @@ class Resource {
     this.compiledParamPath = path2Regexp.compile(this.paramPath)
   }
 
-  index(param) {
-    return Vue.http.get(this.indexUrl(param))
+  index(param, query) {
+    return Vue.http.get(this.indexUrl(param, query))
   }
 
-  create(param, data) {
-    return Vue.http.post(this.indexUrl(param), data)
+  create(param, data, query) {
+    return Vue.http.post(this.indexUrl(param, query), data)
   }
 
-  get(param) {
-    return Vue.http.get(this.paramUrl(param))
+  get(param, query) {
+    return Vue.http.get(this.paramUrl(param, query))
   }
 
-  update(param, data) {
-    return Vue.http.put(this.paramUrl(param), data)
+  update(param, data, query) {
+    return Vue.http.put(this.paramUrl(param, query), data)
   }
 
-  delete(param) {
-    return Vue.http.delete(this.paramUrl(param))
+  delete(param, query) {
+    return Vue.http.delete(this.paramUrl(param, query))
   }
 
-  indexUrl(param) {
-    return store.state.address + this.compiledIndexPath(param)
+  indexUrl(param, query) {
+    return store.state.address + this.compiledIndexPath(param) + (query && ('?' + querystring.stringify(query)) || '')
   }
 
-  paramUrl(param) {
-    return store.state.address + this.compiledParamPath(param)
+  paramUrl(param, query) {
+    return store.state.address + this.compiledParamPath(param) + (query && ('?' + querystring.stringify(query)) || '')
   }
 
   child(name) {

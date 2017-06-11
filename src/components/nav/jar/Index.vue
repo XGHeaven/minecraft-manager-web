@@ -30,23 +30,12 @@
     <el-dialog title="Add Jar" v-model="addJarModal">
       <el-form v-loading="$store.state.version.loading">
         <el-form-item label="Minecraft Version">
-          <el-select v-model="newJarModal.version" filterable>
-            <el-option v-for="version in filterVersions" :label="version.id" :value="version.id" key="version">
-              <span>{{version.id}}</span>
-              <span class="optionSubTitle">{{version.type}}</span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Enable Snapshot">
-          <el-switch v-model="showSnapshot"></el-switch>
-        </el-form-item>
-        <el-form-item label="Show Old Version">
-          <el-switch v-model="showOldVersion"></el-switch>
+          <version-select v-model="newJarModal.version"></version-select>
         </el-form-item>
       </el-form>
       <div slot="footer">
+        <el-button type="danger" @click="addJarModal = false">Cancel</el-button>
         <el-button @click="add()" :loading="addingJar">Confirm</el-button>
-        <el-button type="primary" @click="addJarModal = false">Cancel</el-button>
       </div>
     </el-dialog>
   </div>
@@ -57,8 +46,10 @@
   import Vue from 'vue'
   import * as event from '@/lib/event'
   import {mapState} from 'vuex'
+  import VersionSelect from '@/components/form/VersionSelect'
 
   export default {
+    components: {VersionSelect},
     data() {
       return {
         addJarModal: false,
@@ -66,20 +57,11 @@
           version: ''
         },
         addingJar: false,
-        showSnapshot: false,
-        showOldVersion: false,
         version: ''
       }
     },
     computed: {
-      ...mapState(['jars']),
-      filterVersions() {
-        return this.$store.state.version.versions.filter(version => {
-          if (version.type === 'release') return true
-          if (version.type === 'snapshot') return this.showSnapshot
-          return this.showOldVersion
-        })
-      }
+      ...mapState(['jars'])
     },
     methods: {
       installJar(jar) {
@@ -112,7 +94,7 @@
       },
       add() {
         this.addingJar = true
-        jarServer.createBackup(null, this.newJarModal).then(res => {
+        jarServer.create(null, this.newJarModal).then(res => {
           this.jars.push(res.data)
           this.newJarModal = {}
           this.addingJar = false

@@ -77,11 +77,11 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    loadingVersion: async ({commit, state}) => {
+    loadingVersion: async ({commit, state}, force) => {
       if (state.version.loaded) return
       if (state.version.loading) return
       commit('startUpdateVersion')
-      let res = await resource.version.index()
+      let res = await resource.version.index({}, {refresh: !!force})
       commit('updateVersion', res.data)
     },
 
